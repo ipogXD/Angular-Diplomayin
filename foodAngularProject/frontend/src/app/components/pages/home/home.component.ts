@@ -16,6 +16,9 @@ export class HomeComponent {
       if(parameters['searchTerm']){
         this.foods = foodService.getFoodBySearchTerm(parameters['searchTerm'])
       }
+      else if(parameters['tag']){
+        this.foods = foodService.getAllFoodsByTag(parameters['tag'])
+      }
       else{
         this.foods = foodService.getAll();
       }
