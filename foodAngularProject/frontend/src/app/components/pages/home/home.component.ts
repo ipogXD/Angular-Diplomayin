@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Food } from 'src/app/shared/models/food';
 import { FoodService } from 'src/app/services/food.service';
 import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -12,16 +13,20 @@ export class HomeComponent {
   public foods!: Food[];
 
   constructor(private foodService:FoodService, activatedRoute:ActivatedRoute){
+    let foodObservable:Observable<Food[]>;
     activatedRoute.params.subscribe((parameters)=>{
       if(parameters['searchTerm']){
-        this.foods = foodService.getFoodBySearchTerm(parameters['searchTerm'])
+        foodObservable = foodService.getFoodBySearchTerm(parameters['searchTerm'])
       }
       else if(parameters['tag']){
-        this.foods = foodService.getAllFoodsByTag(parameters['tag'])
+        foodObservable = foodService.getAllFoodsByTag(parameters['tag'])
       }
       else{
-        this.foods = foodService.getAll();
+        foodObservable = foodService.getAll();
       }
+      foodObservable.subscribe((serverFoods)=>{
+        this.foods = serverFoods;
+      })
     })
   }
 }
